@@ -9,9 +9,9 @@ const app = express();
 
 // mongoose (2)
 const mongoose = require("mongoose");
-let mongo_url = "mongodb://127.0.0.1:27017/LamiaEnterprise";
+let mongo_url = process.env.MONGO_URL;
 main().then(()=>{
-    console.log("mongodb is connected");
+    console.log("mongodb is connected to mongoose");
 }).catch((error)=>{
     console.log(error);
 })
