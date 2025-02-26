@@ -12,9 +12,9 @@ const userSchema = new Schema(
     pin:{type: String},
     role: { type: String, required: true, enum: ["User", "Admin", "Agent"] }, 
     currentBalance: { type: Number, required: true, default: 0 }, 
-    transactionType: {
+    transactions: {
       type: Schema.Types.ObjectId,
-      ref: "TransactionType",
+      ref: "transactions",
     }, // Reference to TransactionType model
     totalSendMoney: { type: Number, default: 0 }, 
     totalCashOut: { type: Number, default: 0 }, 

@@ -17,4 +17,4 @@ async function findPin(hashPin, pin) {
     return result
 }
 
-module.exports = { pinHide };
+module.exports = { pinHide, findPin };

@@ -10,7 +10,7 @@ const app = express();
 
 
 // import utils functions
-const {pinHide} = require('./utils/bycryptFunction')
+const {pinHide, findPin} = require('./utils/bycryptFunction')
 
 
 // import Schema
@@ -62,6 +62,7 @@ app.post("/users", async (req, res) => {
       phone,
       phoneCountry,
       pin: hashPin,
+      image,
       role,
       nid,
       accountStatus: role === "User" ? "active" : "pending",
@@ -121,7 +122,18 @@ app.get("/result", async (req, res) => {
 
 
 // user apis route
+app.post('/pinVerify', async(req,res)=>{
+  let email = req.query.email;
+  let pin = req.body.pin;
 
+  let user = await UserData.findOne({email:email})
+  let hashPin = user.pin;
+
+  const result = await findPin(hashPin,pin);
+  console.log(result);
+
+  res.send(result);
+})
 
 
 
