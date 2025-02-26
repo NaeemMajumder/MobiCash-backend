@@ -10,4 +10,11 @@ async function pinHide(pin) {
     return hash;
 }
 
+
+async function findPin(hashPin, pin) {
+
+    const result = await bcrypt.compare(pin, hashPin); 
+    return result
+}
+
 module.exports = { pinHide };
