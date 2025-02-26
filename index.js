@@ -22,9 +22,43 @@ async function main() {
 
 app.use(express.json());
 app.use(cors());
-
-
 const port = process.env.PORT || 3000;
+
+
+
+
+// general API's route
+app.get('/allUsers', async(req, res)=>{
+    res.send({message: "all user gone"})
+})
+
+
+
+// admin apis route
+
+
+
+// agent apis route
+
+
+
+// user apis route
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.get('/', (req,res)=>{
