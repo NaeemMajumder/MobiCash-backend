@@ -40,8 +40,13 @@ const port = process.env.PORT || 3000;
 // general API's route
 
 app.get("/users", async (req, res) => {
-    let users = await UserData.find();
-    res.send(users);
+    let result; 
+    if(req.query.email){
+        result = await UserData.findOne({ email: req.query.email });
+    }else{
+        result = await UserData.find();
+    }
+    res.send(result);
 });
 app.post("/users", async (req, res) => {
     const { name, email, pin, role, nid, phone, phoneCountry, image } = req.body;
