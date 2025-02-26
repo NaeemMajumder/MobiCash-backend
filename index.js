@@ -8,6 +8,10 @@ const cors = require("cors");
 const bcrypt = require('bcrypt');
 const app = express();
 
+
+// import utils functions
+const {pinHide} = require('./utils/bycryptFunction')
+
 // mongoose (2)
 const mongoose = require("mongoose");
 let mongo_url = process.env.MONGO_URL;
@@ -47,6 +51,8 @@ app.post('/users', async(req,res)=>{
         image,
         nid,
     }
+
+    pinHide(pin);
 
     console.log(newUser);
     res.send({message: "api hit"});
