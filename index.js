@@ -38,40 +38,38 @@ const port = process.env.PORT || 3000;
 
 
 // general API's route
+
 app.get("/users", async (req, res) => {
-  res.send({ message: "all user gone" });
+    let users = await UserData.find();
+    res.send(users);
 });
-app.post('/users', async(req,res)=>{
-
-    let {name, email, pin, role, nid, phone, phoneCountry, image} = req.body;
-    let hashPin = await pinHide(pin);
-
+app.post("/users", async (req, res) => {
+    const { name, email, pin, role, nid, phone, phoneCountry, image } = req.body;
+  
+    if (!name || !email || !pin || !role || !nid || !phone || !phoneCountry) {
+      return res.status(400).send({ error: "Missing required fields" });
+    }
+    const hashPin = await pinHide(pin);
+  
     let newUser = {
-        name,
-        email,
-        phone,
-        phoneCountry,
-        pin:hashPin,
-        role,
-        nid,
-    }
-
-
-    if(role === "User"){
-        newUser.accountStatus = "active";
-        newUser.currentBalance = 40;
-    }else{
-        newUser.accountStatus = "pending"
-        newUser.currentBalance = 100000;
-    }
-
+      name,
+      email,
+      phone,
+      phoneCountry,
+      pin: hashPin,
+      role,
+      nid,
+      accountStatus: role === "User" ? "active" : "pending",
+      currentBalance: role === "User" ? 40 : 100000,
+    };
+  
     const addNewUser = new UserData(newUser);
     const result = await addNewUser.save();
+  
+    res.status(201).send({ message: "User created successfully", result });
+});
+  
 
-    console.log(result);
-
-    res.send({message: "api hit"});
-})
 
 
 // ===================
