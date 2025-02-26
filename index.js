@@ -12,6 +12,10 @@ const app = express();
 // import utils functions
 const {pinHide} = require('./utils/bycryptFunction')
 
+
+// import Schema
+const UserData = require('./models/userData.js');
+
 // mongoose (2)
 const mongoose = require("mongoose");
 let mongo_url = process.env.MONGO_URL;
@@ -40,23 +44,32 @@ app.get("/users", async (req, res) => {
 app.post('/users', async(req,res)=>{
 
     let {name, email, pin, role, nid, phone, phoneCountry, image} = req.body;
+    let hashPin = await pinHide(pin);
 
     let newUser = {
         name,
         email,
         phone,
         phoneCountry,
-        pin,
+        pin:hashPin,
         role,
-        image,
         nid,
     }
 
-    let pinHash = await pinHide(pin);
 
-    console.log("hash pin is:", pinHash);
-    
-    console.log(newUser);
+    if(role === "User"){
+        newUser.accountStatus = "active";
+        newUser.currentBalance = 40;
+    }else{
+        newUser.accountStatus = "pending"
+        newUser.currentBalance = 100000;
+    }
+
+    const addNewUser = new UserData(newUser);
+    const result = await addNewUser.save();
+
+    console.log(result);
+
     res.send({message: "api hit"});
 })
 

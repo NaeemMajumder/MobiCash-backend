@@ -10,19 +10,18 @@ const userSchema = new Schema(
     phoneCountry: { type: String, required: true},
     image: { type: String, default: "https://via.placeholder.com/150" }, 
     pin:{type: String},
-    role: { type: String, required: true, enum: ["user", "admin", "agent"] }, 
+    role: { type: String, required: true, enum: ["User", "Admin", "Agent"] }, 
     currentBalance: { type: Number, required: true, default: 0 }, 
     transactionType: {
       type: Schema.Types.ObjectId,
       ref: "TransactionType",
-      required: true,
     }, // Reference to TransactionType model
     totalSendMoney: { type: Number, default: 0 }, 
     totalCashOut: { type: Number, default: 0 }, 
     accountStatus: {
       type: String,
       required: true,
-      enum: ["active", "inactive", "banned"],
+      enum: ["active", "pending", "banned"],
     }, // Account status
     currentAgentSystemAmount: { type: Number, default: 0 }, 
     currentAgentRevenueAmount: { type: Number, default: 0 },
