@@ -52,8 +52,10 @@ app.post('/users', async(req,res)=>{
         nid,
     }
 
-    pinHide(pin);
+    let pinHash = await pinHide(pin);
 
+    console.log("hash pin is:", pinHash);
+    
     console.log(newUser);
     res.send({message: "api hit"});
 })
