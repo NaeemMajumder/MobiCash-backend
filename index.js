@@ -17,6 +17,7 @@ const {pinHide, findPin} = require('./utils/bycryptFunction')
 // import Schema
 const UserData = require('./models/userData.js');
 const TransactionData = require('./models/transactionData.js');
+const WithDrawData = require('./models/withdrawData.js');
 
 // mongoose (2)
 const mongoose = require("mongoose");
@@ -119,6 +120,39 @@ app.get("/result", async (req, res) => {
 
 
 // agent apis route
+app.post('/cashIn', async(req,res)=>{
+  const transactionData = req.body;
+
+  transactionData.transactionId = "TXN-" + uuidv4().slice(0, 8);
+  transactionData.transactionType = "Cash In";
+  const result = await new TransactionData(transactionData).save();
+
+  await UserData.findOneAndUpdate(
+    { email: transactionData?.email }, 
+    {
+      $inc: { currentBalance: -transactionData?.amountTransaction, totalCashInAgent: transactionData?.amountTransaction, currentAgentSystemAmount: transactionData?.amountTransaction},
+      $push: { transactions: result._id },
+    },
+    { new: true } 
+  );
+
+  await UserData.findOneAndUpdate(
+    { phone: transactionData.phoneNumber }, 
+    { $inc: { currentBalance: transactionData?.amountTransaction} },
+    { new: true } 
+  );
+
+  res.send(result);
+});
+
+app.post('/withdrawRequest', async(req,res)=>{
+  const withdrawData = req.body;
+  withdrawData.withdrawId = "WID-" + uuidv4().slice(0, 8);
+  const result = await new WithDrawData(withdrawData).save();
+  res.send(result);
+})
+
+
 
 
 
@@ -196,30 +230,7 @@ app.post('/cashOut', async(req,res)=>{
   res.send(result);
 })
 
-app.post('/cashIn', async(req,res)=>{
-  const transactionData = req.body;
 
-  transactionData.transactionId = "TXN-" + uuidv4().slice(0, 8);
-  transactionData.transactionType = "Cash In";
-  const result = await new TransactionData(transactionData).save();
-
-  await UserData.findOneAndUpdate(
-    { email: transactionData?.email }, 
-    {
-      $inc: { currentBalance: -transactionData?.amountTransaction, totalCashInAgent: transactionData?.amountTransaction, currentAgentSystemAmount: transactionData?.amountTransaction},
-      $push: { transactions: result._id },
-    },
-    { new: true } 
-  );
-
-  await UserData.findOneAndUpdate(
-    { phone: transactionData.phoneNumber }, 
-    { $inc: { currentBalance: transactionData?.amountTransaction} },
-    { new: true } 
-  );
-
-  res.send(result);
-})
 
 
 
