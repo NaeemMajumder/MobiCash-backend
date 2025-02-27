@@ -15,7 +15,7 @@ const userSchema = new Schema(
     transactions: [
       {
         type: Schema.Types.ObjectId,
-        ref: "transactions",
+        ref: "Transaction",
       }
     ],
     totalSendMoney: { type: Number, default: 0 }, 
