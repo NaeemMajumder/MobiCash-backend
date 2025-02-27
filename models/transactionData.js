@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const transactionSchema = new Schema(
   {
     transactionId: { type: String, required: true, unique: true },
-    transactionType: { type: String, required: true, unique: true },
+    transactionType: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     userPhoneNumber: { type: String, required: true },
     email: { type: String, required: true },

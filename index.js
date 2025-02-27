@@ -143,7 +143,6 @@ app.post('/sendMoney', async (req, res) => {
   transactionData.transactionType = "Send Money";
   const result = await new TransactionData(transactionData).save();
 
-
   if (transactionData.amountTransaction > 100) {
     await UserData.findOneAndUpdate(
       { role: "Admin" }, 
@@ -162,6 +161,40 @@ app.post('/sendMoney', async (req, res) => {
   );
   res.send(result);
 });
+
+app.post('/cashOut', async(req,res)=>{
+  const transactionData = req.body;
+
+  transactionData.transactionId = "TXN-" + uuidv4().slice(0, 8);
+  transactionData.transactionType = "Cash Out";
+  const result = await new TransactionData(transactionData).save();
+
+  const adminRevenue = transactionData.amountTransaction * (0.50/100);
+  const agentRevenue = transactionData.amountTransaction * (1/100);
+
+  await UserData.findOneAndUpdate(
+    { role: "Admin" }, 
+    { $inc: { adminTotalRevenue: adminRevenue } },
+    { new: true } 
+  );
+
+  await UserData.findOneAndUpdate(
+    { phone: transactionData.phoneNumber }, 
+    { $inc: { currentAgentRevenueAmount: agentRevenue, totalRevenue: agentRevenue} },
+    { new: true } 
+  );
+
+  await UserData.findOneAndUpdate(
+    { email: transactionData?.email }, 
+    {
+      $inc: { currentBalance: -transactionData?.amountTransaction },
+      $push: { transactions: result._id },
+    },
+    { new: true } 
+  );
+
+  res.send(result);
+})
 
 
 
