@@ -5,6 +5,7 @@ const transactionSchema = new Schema(
   {
     transactionId: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
+    userPhoneNumber: { type: String, required: true },
     email: { type: String, required: true },
     name: { type: String, required: true },
     amountTransaction: { type: Number, required: true },

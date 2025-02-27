@@ -6,6 +6,7 @@ if (process.env.NODE_ENV != "production") {
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require("uuid");
 const app = express();
 
 
@@ -15,6 +16,7 @@ const {pinHide, findPin} = require('./utils/bycryptFunction')
 
 // import Schema
 const UserData = require('./models/userData.js');
+const TransactionData = require('./models/transactionData.js');
 
 // mongoose (2)
 const mongoose = require("mongoose");
@@ -130,10 +132,38 @@ app.post('/pinVerify', async(req,res)=>{
   let hashPin = user.pin;
 
   const result = await findPin(hashPin,pin);
-  console.log(result);
 
   res.send(result);
 })
+
+app.post('/transactions', async (req, res) => {
+  const transactionData = req.body;
+
+  transactionData.transactionId = "TXN-" + uuidv4().slice(0, 8);
+  const result = await new TransactionData(transactionData).save();
+
+
+  if (transactionData.amountTransaction > 100) {
+    await UserData.findOneAndUpdate(
+      { role: "Admin" }, 
+      { $inc: { adminTotalRevenue: 5 } },
+      { new: true } 
+    );
+  }
+
+  await UserData.findOneAndUpdate(
+    { email: transactionData?.email }, 
+    {
+      $inc: { currentBalance: -transactionData?.amountTransaction },
+      $push: { transactions: result._id },
+    },
+    { new: true } 
+  );
+
+
+  res.send(result);
+});
+
 
 
 
