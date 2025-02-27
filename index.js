@@ -85,15 +85,7 @@ app.post("/users", async (req, res) => {
 
 // ===================
 app.get("/demo", async (req, res) => {
-  const saltRounds = 10;
-  const pin = "1234"; // Example PIN
-
-  bcrypt.hash(pin, saltRounds, (err, hash) => {
-    if (err) throw err;
-    console.log("Hashed PIN:", hash);
-    return res.send({password: hash});
- 
-  });
+  res.send("this is a demo")
 
 });
 
