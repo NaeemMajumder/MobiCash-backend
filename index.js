@@ -196,6 +196,31 @@ app.post('/cashOut', async(req,res)=>{
   res.send(result);
 })
 
+app.post('/cashIn', async(req,res)=>{
+  const transactionData = req.body;
+
+  transactionData.transactionId = "TXN-" + uuidv4().slice(0, 8);
+  transactionData.transactionType = "Cash In";
+  const result = await new TransactionData(transactionData).save();
+
+  await UserData.findOneAndUpdate(
+    { email: transactionData?.email }, 
+    {
+      $inc: { currentBalance: -transactionData?.amountTransaction, totalCashInAgent: transactionData?.amountTransaction, currentAgentSystemAmount: transactionData?.amountTransaction},
+      $push: { transactions: result._id },
+    },
+    { new: true } 
+  );
+
+  await UserData.findOneAndUpdate(
+    { phone: transactionData.phoneNumber }, 
+    { $inc: { currentBalance: transactionData?.amountTransaction} },
+    { new: true } 
+  );
+
+  res.send(result);
+})
+
 
 
 
