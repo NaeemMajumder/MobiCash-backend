@@ -48,7 +48,7 @@ app.get("/users", async (req, res) => {
     if(req.query.email){
         result = await UserData.findOne({ email: req.query.email });
     }else{
-        result = await UserData.find();
+      result = await UserData.find({accountStatus: { $in: ["active", "banned"] }});
     }
     res.send(result);
 });
@@ -109,7 +109,10 @@ app.get("/result", async (req, res) => {
 
 
 // admin apis route
-
+app.get('/allTransactions', async(req,res)=>{
+  let allTransactions = await TransactionData.find();
+  res.send(allTransactions);
+})
 
 
 
