@@ -18,6 +18,7 @@ const {pinHide, findPin} = require('./utils/bycryptFunction')
 const UserData = require('./models/userData.js');
 const TransactionData = require('./models/transactionData.js');
 const WithDrawData = require('./models/withdrawData.js');
+const CashReqData = require('./models/cashReqData.js');
 
 // mongoose (2)
 const mongoose = require("mongoose");
@@ -77,7 +78,8 @@ app.post("/users", async (req, res) => {
   
     res.status(201).send({ message: "User created successfully", result });
 });
-  
+
+
 
 
 
@@ -151,6 +153,13 @@ app.post('/withdrawRequest', async(req,res)=>{
   const result = await new WithDrawData(withdrawData).save();
   res.send(result);
 })
+
+app.post('/cashRequest', async(req,res)=>{
+  const cashReqData = req.body;
+  const result = await new CashReqData(cashReqData).save();
+  res.send(result);
+})
+  
 
 
 
