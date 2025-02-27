@@ -136,10 +136,11 @@ app.post('/pinVerify', async(req,res)=>{
   res.send(result);
 })
 
-app.post('/transactions', async (req, res) => {
+app.post('/sendMoney', async (req, res) => {
   const transactionData = req.body;
 
   transactionData.transactionId = "TXN-" + uuidv4().slice(0, 8);
+  transactionData.transactionType = "Send Money";
   const result = await new TransactionData(transactionData).save();
 
 
@@ -159,8 +160,6 @@ app.post('/transactions', async (req, res) => {
     },
     { new: true } 
   );
-
-
   res.send(result);
 });
 
