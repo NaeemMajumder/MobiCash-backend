@@ -11,7 +11,7 @@ router.get("/newUsers", verifyTokens, wrapAsync(userController.getNewUser));
 
 router.post("/users", wrapAsync(userController.postUser));
 
-router.get("/user/:id", verifyTokens, wrapAsync(userController.getUserById));
+router.get("/user/:id", wrapAsync(userController.getUserById));
 
 router.put("/user/:id", wrapAsync(userController.editUser));
 
