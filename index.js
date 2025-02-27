@@ -48,10 +48,16 @@ app.get("/users", async (req, res) => {
     if(req.query.email){
         result = await UserData.findOne({ email: req.query.email });
     }else{
-      result = await UserData.find({accountStatus: { $in: ["active", "banned"] }});
+      result = await UserData.find({accountStatus: { $in: ["active", "banned"] }}).sort({ createdAt: -1 });
     }
     res.send(result);
 });
+
+app.get('/newUsers', async(req,res)=>{
+  result = await UserData.find({accountStatus: { $in: "pending" }}).sort({ createdAt: -1 }); 
+  res.send(result);
+})
+
 app.post("/users", async (req, res) => {
     const { name, email, pin, role, nid, phone, phoneCountry, image } = req.body;
   
@@ -110,7 +116,7 @@ app.get("/result", async (req, res) => {
 
 // admin apis route
 app.get('/allTransactions', async(req,res)=>{
-  let allTransactions = await TransactionData.find();
+  let allTransactions = await TransactionData.find().sort({ createdAt: -1 });
   res.send(allTransactions);
 })
 
